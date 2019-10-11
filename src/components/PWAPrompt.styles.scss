@@ -41,6 +41,10 @@ $blue-color-modern-dark: rgb(88, 147, 247);
     opacity: 1;
   }
 
+  &.hidden {
+    display: none;
+  }
+
   &.modern {
     @media (prefers-color-scheme: dark) {
       & {
@@ -73,7 +77,7 @@ $blue-color-modern-dark: rgb(88, 147, 247);
   }
 
   &.hidden {
-    visibility: hidden;
+    transform: translateY(calc(100% + 10px));
   }
 
   &.modern {
