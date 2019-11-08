@@ -25,6 +25,10 @@ $blue-color-legacy: rgb(45, 124, 246);
 $blue-color-modern-light: rgb(0, 122, 255);
 $blue-color-modern-dark: rgb(88, 147, 247);
 
+.noScroll {
+  overflow: hidden;
+}
+
 .pwaPromptOverlay {
   background-color: $overlay-color-legacy;
   left: 0;
@@ -33,12 +37,18 @@ $blue-color-modern-dark: rgb(88, 147, 247);
   opacity: 0;
   position: fixed;
   top: 0;
-  transition: opacity 0.2s ease-in forwards;
+  transition: opacity 0.2s ease-in;
   width: 100vw;
   z-index: 999999;
 
   &.visible {
     opacity: 1;
+    display: block;
+  }
+
+  &.hidden {
+    pointer-events: none;
+    touch-action: none;
   }
 
   &.modern {
@@ -70,10 +80,12 @@ $blue-color-modern-dark: rgb(88, 147, 247);
 
   &.visible {
     transform: translateY(0);
+    display: block;
   }
 
   &.hidden {
-    visibility: hidden;
+    pointer-events: none;
+    touch-action: none;
   }
 
   &.modern {
@@ -131,6 +143,8 @@ $blue-color-modern-dark: rgb(88, 147, 247);
     font-size: 16px;
     padding: 0;
     margin: 0;
+    border: 0;
+    background: transparent;
 
     .modern & {
       color: $blue-color-modern-light;
