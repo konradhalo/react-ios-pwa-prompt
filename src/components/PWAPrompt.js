@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 
 import ShareIcon from "./ShareIcon";
 import HomeScreenIcon from "./HomeScreenIcon";
@@ -9,11 +9,15 @@ const PWAPrompt = ({
   delay,
   copyTitle,
   copyBody,
+  copyBodyNonSafari,
   copyAddHomeButtonLabel,
   copyShareButtonLabel,
+  copyDoNotShowCheckbox,
   copyClosePrompt,
   permanentlyHideOnDismiss,
+  doNotShowDays,
   promptData,
+  expireDate,
   maxVisits
 }) => {
   const [isVisible, setVisibility] = useState(!Boolean(delay));
@@ -33,17 +37,33 @@ const PWAPrompt = ({
   const isiOS13 = /OS 13/.test(window.navigator.userAgent);
   const visibilityClass = isVisible ? styles.visible : styles.hidden;
   const iOSClass = isiOS13 ? styles.modern : "legacy";
+  const isNonSafari = /FxiOS/.test(window.navigator.userAgent) || /CriOS/.test(window.navigator.userAgent) || /EdgiOS/.test(window.navigator.userAgent);
+
+  const displayCopyBody = isNonSafari ? copyBodyNonSafari : copyBody;
+
+  const checkboxDoNotShowEl = useRef(null);
 
   const dismissPrompt = () => {
     document.body.classList.remove(styles.noScroll);
     setVisibility(false);
-
+    console.log('checkbox value: ');
+    console.log(checkboxDoNotShowEl.current.checked);
     if (permanentlyHideOnDismiss) {
       localStorage.setItem(
         "iosPwaPrompt",
         JSON.stringify({
           ...promptData,
-          visits: maxVisits
+          visits: promp,
+        })
+      );
+    }
+    const doNotShowPrompt = checkboxDoNotShowEl.current.checked;
+    if (doNotShowPrompt) {
+      localStorage.setItem(
+        "iosPwaPrompt",
+        JSON.stringify({
+          ...promptData,
+          doNotShowUntil: expireDate
         })
       );
     }
@@ -82,8 +102,10 @@ const PWAPrompt = ({
         <div className={styles.pwaPromptBody}>
           <div className={styles.pwaPromptDescription}>
             <p id="pwa-prompt-description" className={styles.pwaPromptCopy}>
-              {copyBody}
+              {displayCopyBody}
             </p>
+            {doNotShowDays && 
+            <p className={styles.pwaPromptCheckboxWrapper}><input className={styles.pwaPromptCheckbox} ref={checkboxDoNotShowEl} id="checkboxDays" type="checkbox" value={doNotShowDays} /><label className={styles.pwaPromptCheckboxLabel} htmlFor="checkboxDays">{copyDoNotShowCheckbox}</label></p>}
           </div>
         </div>
         <div className={styles.pwaPromptInstruction}>
